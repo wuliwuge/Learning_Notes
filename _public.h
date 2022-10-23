@@ -352,6 +352,69 @@ namespace Polynomial {
    *pRear = p; // 修改pRear的值使其指向新的尾元素
  }
  
+ ##如何将两个多项式相加，前面有思路
+ 
+ 
+ ##如何将两个多项式相乘
+ 方法1：将乘法运算转换为加法运算
+ 
+ 方法2：逐项插入，主要是为了保证新的多项式也是 以 指数递减的 怎么插入是个点
+ Polynomial Mult(Polynomial P1, Polynomial P2)
+ {
+   if (!P1 || !P2) return NULL;
+   Polynomial Rear, P, t1 = P1, t2 = P2, Tmp;
+   int c, e;
+   P = (Polynomial)malloc(sizeof(PolyNode));
+   P->link = NULL
+   Rear = P;
+   /*先使用P1的首节点 与 P2的所有节点构建一个新的递减多项式 */
+   while (t2) {
+     c = t1->ceof * t2->ceof; // 系数相乘指数相加
+     e = t1->expon * t2->expon; 
+     Attach(c, e, &Rear);
+     t2 = t2->link;
+   } // 新的多项式构建完成
+  
+   t1 = P1->link; // 将P1的后继节点全部相乘按照指数递减的方式插入新的多项式中
+  
+   while (t1) {
+     t2 = P2; 
+     Rear = P; // 由于P1 和 P2都是从大到小排序的所以无需将Rear写入 t2的循环中
+     while (t2) {
+       c = t1->ceof * t2->ceof;
+       e = t1->expon * t2->expon;
+       while (Rear->link && Rear->link->expon > e) { // 寻找新的数据在新的多项式中插入的位置
+         Rear = Rear->link; 
+       }
+      
+       if (Rear->link && Rear->link->expon == e) {
+         if (c + Rear->link->ceof) {
+           Rear->link->ceof += c;
+         } else {  // 如果系数相加为0则需要删除该节点
+           Tmp = Rear->link;
+           Rear->link = Tmp->link;
+           free(Tmp); Tmp = NULL;
+         }
+       } else { // 要么Rear的下一节点比当前系数小，要么不存在
+         Tmp = (Polynomial)malloc(sizeof(PolyNode));
+         Tmp->expon = e;
+         Tmp->ceof = c;
+         Tmp->link = Rear->link;
+         Rear->link = Tmp;
+         Rear = Rear->link; // 因为下一个节点算出来得指数值肯定比当前Tmp的小，所以将Rear移动值Tmp位置处，可减少一个循环判断
+       }
+       t2 = t2->link;
+     }
+     t1 = t1->link;
+   }
+   Tmp = P;
+   P = P->link;
+   free(Tmp);
+   return P;
+ }
+
+// 多项式的打印，略去....
+ 
 }
 
 
