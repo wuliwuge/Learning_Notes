@@ -288,6 +288,70 @@ namespace Polynomial {
     struct PolyNode *link;
   }PolyNode, *Polynomial;
  
+ 
+ ##程序框架搭建
+ int main() 
+ {
+   读入多项式1
+   读入多项式2
+   乘法运算并输出
+   加法运算并输出
+   return 0：
+ }
+ 
+ ##需要设计的函数
+ 读一个多项式
+ 两个多项式相乘
+ 两个多项式相加
+ 多项式输出
+ 
+ 
+ int main() 
+ {
+   Polynomial P1, P2, PP, PS;
+   P1 = ReadPoly();
+   P2 = ReadPoly();
+   PP = Mult(P1, P2);
+   PrintPoly(PP);
+   PS = Add(P1, P2);
+   PrintPoly(PS);
+  
+   return 0;
+ }
+ 
+ 
+ ##如何读入多项式
+ Polynomial ReadPoly()
+ {
+   int N, c, e;
+   Polynomial Front, Rear, Tmp;
+   Rear = (Polynomial)malloc(sizeof(PolyNode)); // 使用一个空白节点方便后续Attch时无需判NULL和 Front可直接可用
+   Rear->link = NULL;
+   Front = Rear;
+   scanf("%d", &N);
+    while (N--) {
+      scanf("%d %d", &c, &e);
+      Attach(c, e, &Rear);
+    }
+   
+   Tmp = Front;
+   Front = Front->link;
+   free(Tmp);
+   return Front;
+ }
+ //思路：输入有几个多项式 N ,然后输入系数和指数 构造一个结构体 是的 Rear记录新的多项式的链入，最后返回这个 链表的头
+ 
+ void Attach(int c, int e, Polynomial *pRear)
+ {
+   Polynomial P;
+   P = (Polynomial)malloc(sizoef(PolyNode));
+   P->ceof = c;
+   P->expon = e;
+   P->link = NULL;
+   (*pRear)->link = P;
+   *pRear = p; // 修改pRear的值使其指向新的尾元素
+ }
+ 
 }
 
 
