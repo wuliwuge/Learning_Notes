@@ -454,6 +454,32 @@ T(N) = O(N)
  
  
 
+引子 - 二分查找 - 查找梨子
+排好的数组
+
+typedef struct LNode{
+  int Length;
+  ElementType Data[Length];
+}LNode, *List;
+int binarysearch(List Prt, int K)
+{
+  int left = 0, right = Ptr->Length;
+  int mid = left + (right - left) / 2;
+  while (left < right) {
+    if (Ptr->Data[mid] < K) {
+      left = mid + 1;
+      mid = left + (right - left) / 2;
+    } else if (Ptr->Data[mid] > K) {
+      right = mid;
+      mid = left + (right + left) / 2;
+    } else {
+      return mid;
+    }
+  }
+ 
+  return -1;
+}
+
 
 
 
