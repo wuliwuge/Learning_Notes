@@ -417,5 +417,58 @@ namespace Polynomial {
  
 }
 
+###引子 - 顺序查找
+什么是树？
+分层次组织在管理上具有更高效率
+数据管理的基本操作之一：查找
+
+typedef struct LNode {
+  ElementType Data[Maxsize];
+  int Length;  // 数组中元素的个数
+}LNode, *List;
+
+_ _ _ _ _..._ _...
+0 1 2 3 4   9 10...
+^
+哨兵
+
+顺序查找-没有哨兵-需要判断是否已达边界 
+注：第0号下标不存数据，数据从下标为1处开始
+
+int SequentialSearch(List Tbl, ElementType K)
+{
+  int i; // 无哨兵需要判断 条件的边界
+  for (i = Tbl->Data[Tbl->Length]; i > 0 && Tbl->Data[i] != K; i--);
+  return i; // 找到返回 i ，没有找到返回0
+}
+
+int SequentialSearch(List Tbl, ElementType K)
+{
+  int i;
+  Tbl->Data[0] = K; // 设置哨兵，如果没有在 1 - Length找到则在 0 处终止
+  for (i = Tbl->Data[Tbl->Length]; Tbl->Data[i] != K; i--);
+  return i; // 找到返回 i ，没有找到返回0
+}
+
+T(N) = O(N)
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif
