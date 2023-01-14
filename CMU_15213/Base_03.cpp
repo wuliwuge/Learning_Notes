@@ -1,4 +1,5 @@
-// cpu、寄存器、汇编、指针
+// cpu、寄存器、汇编、指针 --》深入理解计算机系统03
+// 汇编、译码、虚拟地址  --》深入理解计算机系统04   
 
 /*
     objdump -d main.exe > ./1.txt 输出可执行文件的汇编和机器码 以文本的形式表示 至于这个命令的细节，自行百度
@@ -70,7 +71,7 @@ typedef struct CPU_STRUCT
     uint64_t rbp;
     uint64_t rsp;
     uint64_t rip;
-} cpu_t;
+} reg_t;
 
 // 模拟内存包含主存和寄存器
 /*
@@ -104,10 +105,10 @@ typedef enum OD_TYPE
 typedef struct OD
 {
     od_type_t type;
-    uint64_t imm;  // 立即数
+    int64_t imm;  // 立即数
     uint64_t scal; // 乘数
-    uint64_t reg1; // 寄存器1
-    uint64_t reg2; // 寄存器2
+    int64_t *reg1; // 寄存器1
+    uint64_t *reg2; // 寄存器2
 
 }od_t;
 
@@ -139,7 +140,7 @@ uint64_t decode_od(od_t od)
 void test01()
 {
     // 小端
-    cpu_t cpu;
+    reg_t cpu;
     cpu.rax = 0x1234abcd5678ffaa;
     printf("eax: %08x\n", cpu.eax); // eax: 5678ffaa
     printf("ax: %04x\n", cpu.ax);   // ax: ffaa
