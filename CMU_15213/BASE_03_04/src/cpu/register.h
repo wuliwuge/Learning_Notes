@@ -1,6 +1,10 @@
+#ifndef __REGISTER__H
+#define __REGISTER__H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h> // uint32_t uint64_t..
+
 
 // 简单模拟cpu
 typedef struct REG_STRUCT
@@ -27,4 +31,6 @@ typedef struct REG_STRUCT
     uint64_t rip;
 } reg_t;
 
-reg_t reg;
+static reg_t reg;
+
+#endif /* __REGISTER__H */

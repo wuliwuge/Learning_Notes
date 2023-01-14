@@ -1,18 +1,13 @@
+#ifndef __INSTRUCTION__H
+#define __INSTRUCTION__H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h> // uint32_t uint64_t..
 
+// int a = 10; // 此处不知道为啥会多重定义，先记下来。
 
-// 模拟内存包含主存和寄存器
-/*
-    immediate: 立即数
-    register：寄存器
-    memory：主存
-*/
-
-// 定义内存
-#define MM_LEN (1000)
-uint8_t mm[MM_LEN];  // 定义1000个字节的内存
+#define NUM_INSTRUCTION (30)
 
 // 定义操作符
 typedef enum OP
@@ -20,6 +15,7 @@ typedef enum OP
     MOV,  // 0
     PUSH, // 1
     CALL, // 2
+    add_reg_reg, // 3
 }op_t;
 
 // 定义如何进行取址
@@ -37,8 +33,8 @@ typedef struct OD
     od_type_t type;
     int64_t imm;  // 立即数
     int64_t scal; // 乘数
-    int64_t *reg1; // 寄存器1
-    uint64_t *reg2; // 寄存器2
+    uint64_t *reg1; // 寄存器1
+    uint64_t *reg2; // 寄存器2 --> 类似访问数组的index
 
     char code[100];  // 命令本身
 
@@ -51,23 +47,15 @@ typedef struct INSTRUCT_STRUCT
     od_t dest; // 目标operand
 }inst_t;
 
-#define INST_LEN (100)
-inst_t program[INST_LEN];
+typedef void (*handler_t)(uint64_t, u_int64_t);
 
-// 译码
-uint64_t decode_od(od_t od);
+// 用于存放 对应操作符的 函数指针。
+static handler_t handler_table[NUM_INSTRUCTION];
+// 不知道为啥，up这个吊毛根本，没有加staic 但是 这个 .h 中的成员被 多个.c文件 include 居然没有重定义 fuck
 
-// 译码
-uint64_t decode_od(od_t od)
-{
-    if (od.type == IMM) {
-        return od.imm;
-    } 
-    else if (od.type == REG) {
-        return *(uint64_t *)od.reg;
-    }
-    else {
-        uint64_t addr = MM_LEN + 0xff;
-        return mm[addr % MM_LEN];
-    }
-}
+
+void instruction_cycle();
+
+void add_reg_reg_handler(uint64_t src, uint64_t dst);
+
+#endif /* __INSTRUCTION__H */

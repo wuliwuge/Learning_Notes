@@ -1,14 +1,17 @@
 # 当前是在window下测试makefile，可做linux下重新编写
 CC = g++
-CFLAGS = -Wall -g -O2 -Werror -std=g++17
+# CFLAGS = -Wall -g -O2 -Werror 
+CFLAGS = -g
 
 EXE = program
 
-CODE = ./memory/instruction.cpp ./disk/code.cpp
+SRC = ./src
+
+CODE = ./src/memory/instruction.cpp ./src/disk/code.cpp ./src/memory/dram.cpp ./src/cpu/mmu.c ./src/main.cpp 
 
 .PHONY: program
 main:
-	$(CC) $(CFLAGS) -I $(CODE) -o $(EXE)
+	$(CC) $(CFLAGS) -I$(SRC) $(CODE) -o $(EXE) -std=c++11 # 后续需要更新gcc的版本
 
 run:
 	./$(EXE)
