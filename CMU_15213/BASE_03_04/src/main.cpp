@@ -10,9 +10,21 @@ using namespace std;
 #include "disk/elf.h"
 #include "cpu/mmu.h"
 
+// 当前模拟的就是这个函数的过程，
+uint64_t add(uint64_t a, uint64_t b)
+{
+
+    uint64_t c = a + b;
+    return c;
+}
 
 int main()
 {
+    // uint64_t a = 0x12340000;
+    // uint64_t b = 0xabcd;
+    // uint64_t c = add(a, b);
+
+    // return 0;
     // 加载操作符运算
     init_handler_table();
 
@@ -95,6 +107,7 @@ gdb下，打上断点 run 在 disas --> 可以反汇编
     examine命令 x ：查看内存地址中的值
     格式：x/<n/f/u> 
     ni ni命令类似于n命令， 所不同的是，这两个命令（si/ni）所针对的是汇编指令，而s/n针对的是源代码。
+    info reg -- info r 查看寄存器的值
 */
 
 /*
