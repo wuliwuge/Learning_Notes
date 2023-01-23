@@ -7,7 +7,7 @@
 inst_t program[INST_LEN] = {
     // uint64_t add(uint64_t, uint64_t) 这里是模拟up在gdb下的add函数的 反汇编命令
     {
-        push_reg,
+        push_reg,  // 压栈
         { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
         { EMPTY,  0,  0,  nullptr,              nullptr },
         "push    \%rbp"
@@ -61,13 +61,13 @@ inst_t program[INST_LEN] = {
         "mov    -0x8(\%rbp),\%rax"
     },
     {
-        pop_reg,
+        pop_reg,  // 弹出栈
         { REG,    0,  0,  (uint64_t *)&reg.rbp, nullptr },
         { EMPTY,    0,  0,  nullptr, nullptr },
         "pop    \%rbp"
     },
     {
-        ret,
+        ret,  // 从这个函数退出
         { EMPTY,    0,  0,  nullptr, nullptr },
         { EMPTY,    0,  0,  nullptr, nullptr },
         "retq"
@@ -76,7 +76,7 @@ inst_t program[INST_LEN] = {
     {
         mov_reg_reg,
         { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
-        { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rsi, nullptr },
         "mov    \%rdx,\%rsi"
     },
     {
@@ -86,7 +86,7 @@ inst_t program[INST_LEN] = {
         "mov    \%rax,\%rdi"
     },
     {
-        call,
+        call,  // call 的是 add函数的起始地址
         { IMM,    (uint64_t)&(program[0]),  0,  nullptr, nullptr },
         { EMPTY,    0,  0,  nullptr, nullptr },
         "callq    <add>"

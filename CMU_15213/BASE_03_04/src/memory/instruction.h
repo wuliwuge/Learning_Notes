@@ -53,6 +53,7 @@ typedef struct INSTRUCT_STRUCT
 
 typedef void (*handler_t)(uint64_t, u_int64_t);
 
+void init_handler_table();
 
 void instruction_cycle();
 
