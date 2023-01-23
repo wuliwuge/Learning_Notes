@@ -16,7 +16,7 @@ __attribute__((unused)) static uint64_t decode_od(od_t od) // 如果在 Makefile
 
         if (od.type == MM_IMM)
         {
-            vaddr = od.imm;
+            vaddr = *(uint64_t *)&od.imm;
         } else if (od.type == MM_REG) {
             // store reg
             vaddr = *(od.reg1);
@@ -25,7 +25,7 @@ __attribute__((unused)) static uint64_t decode_od(od_t od) // 如果在 Makefile
             vaddr = od.imm + *(od.reg1);
         } else if (od.type == MM_REG1_REG2) {
             // store reg
-            vaddr = *od.code + *od.reg2;
+            vaddr = *od.reg1 + *od.reg2;
         } else if (od.type == MM_IMM_REG1_REG2) {
             // store reg
             vaddr = *od.reg1 + *od.reg2 + od.imm;
@@ -64,6 +64,7 @@ void instruction_cycle()
 void init_handler_table()
 {
     // 将函数指针放入对应的函数数组中
+    handler_table[mov_reg_reg] = &move_reg_reg_handler;
     handler_table[add_reg_reg] = &add_reg_reg_handler;
 }
 
@@ -90,4 +91,10 @@ void add_reg_reg_handler(uint64_t src, uint64_t dst)
     pmm[0x1235] = 0x1234abcd
 
     */
+}
+
+void move_reg_reg_handler(uint64_t src, uint64_t dst)
+{
+    *(uint64_t *)dst = *(uint64_t *)src;
+    reg.rip = reg.rip + sizeof(inst_t);
 }

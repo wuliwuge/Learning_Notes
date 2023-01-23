@@ -5,9 +5,96 @@
 #include "cpu/register.h"
 
 inst_t program[INST_LEN] = {
+    // uint64_t add(uint64_t, uint64_t) 这里是模拟up在gdb下的add函数的 反汇编命令
     {
-        MOV,
-        {REG, 0, 0, (uint64_t *)&reg.rax, nullptr, "MOV rax rbx"},
-        {REG, 0, 0, (uint64_t *)&reg.rbx, nullptr, "MOV rax rbx"},
+        push_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
+        { EMPTY,  0,  0,  nullptr,              nullptr },
+        "push    \%rbp"
     },
+    {
+        mov_reg_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rsp, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rbp, nullptr },
+        "mov    \%rsp,\%rbp"
+    },
+    {
+        mov_reg_mem,
+        { REG,    0,  0,  (uint64_t *)&reg.rdi, nullptr },
+        { MM_IMM_REG,    -0x18,  0,  (uint64_t *)&reg.rbp, nullptr },
+        "mov    \%rdi,-0x18(\%rbp)"
+    },
+    {
+        mov_reg_mem,
+        { REG,    0,  0,  (uint64_t *)&reg.rsi, nullptr },
+        { MM_IMM_REG,    -0x20,  0,  (uint64_t *)&reg.rbp, nullptr },
+        "mov    \%rdi,-0x20(\%rbp)"
+    },
+    {
+        move_mem_reg,
+        { MM_IMM_REG,    -0x18,  0,  (uint64_t *)&reg.rbp, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
+        "mov    -0x18(\%rbp),\%rdx"
+    },
+    {
+        move_mem_reg,
+        { MM_IMM_REG,    -0x20,  0,  (uint64_t *)&reg.rbp, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
+        "mov    -0x20(\%rbp),\%rdx"
+    },
+    {
+        add_reg_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
+        "add    \%rdx,\%rdx"
+    },
+    {
+        move_mem_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
+        { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbx, nullptr },
+        "mov    \%rax,-0x8(\%rdx)"
+    },
+    {
+        move_mem_reg,
+        { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbp, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
+        "mov    -0x8(\%rbp),\%rax"
+    },
+    {
+        pop_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rbp, nullptr },
+        { EMPTY,    0,  0,  nullptr, nullptr },
+        "pop    \%rbp"
+    },
+    {
+        ret,
+        { EMPTY,    0,  0,  nullptr, nullptr },
+        { EMPTY,    0,  0,  nullptr, nullptr },
+        "retq"
+    },
+    // main entry point 主函数入口
+    {
+        mov_reg_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
+        "mov    \%rdx,\%rsi"
+    },
+    {
+        mov_reg_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rdi, nullptr },
+        "mov    \%rax,\%rdi"
+    },
+    {
+        call,
+        { IMM,    (uint64_t)&(program[0]),  0,  nullptr, nullptr },
+        { EMPTY,    0,  0,  nullptr, nullptr },
+        "callq    <add>"
+    },
+    {
+        mov_reg_reg,
+        { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
+        { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbx, nullptr },
+        "mov    \%rax,-0x8(\%rbp)"
+    }
 };
