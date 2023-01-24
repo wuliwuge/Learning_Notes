@@ -1,8 +1,11 @@
 #include "memory/instruction.h"
 #include "cpu/mmu.h"
 #include "cpu/register.h"
+#include "memory/dram.h"
 
-__attribute__((unused)) static uint64_t decode_od(od_t od) // 如果在 Makefile中开了 -Werror 但是这个函数未使用，可以使用 __attribute__((unused))来正常编译
+handler_t handler_table[NUM_INSTRUCTION];
+
+uint64_t decode_od(od_t od) // 如果在 Makefile中开了 -Werror 但是这个函数未使用，可以使用 __attribute__((unused))来正常编译
 {
     if (od.type == IMM)
     {
@@ -59,6 +62,8 @@ void instruction_cycle()
     handler_t handler = handler_table[instr->op];
     // eg: add_reg_reg_handler(src = &rax, dst = &rbx)
     handler(src, dest);
+
+    printf("    %s\n", instr->code);
 }
 
 void init_handler_table()
@@ -66,6 +71,7 @@ void init_handler_table()
     // 将函数指针放入对应的函数数组中
     handler_table[mov_reg_reg] = &move_reg_reg_handler;
     handler_table[add_reg_reg] = &add_reg_reg_handler;
+    handler_table[call] = &call_handler;
 }
 
 void add_reg_reg_handler(uint64_t src, uint64_t dst)
@@ -95,6 +101,18 @@ void add_reg_reg_handler(uint64_t src, uint64_t dst)
 
 void move_reg_reg_handler(uint64_t src, uint64_t dst)
 {
+    // src: reg
+    // dest: reg
     *(uint64_t *)dst = *(uint64_t *)src;
     reg.rip = reg.rip + sizeof(inst_t);
+}
+
+void call_handler(uint64_t src, uint64_t dst)
+{
+    // src: imm address of called function
+    reg.rsp -= 8; // 整体设计实现参照csapp中的call --> 后续研读
+    // write return address to rsp memory
+    write64bits_dram(va2pa(reg.rsp), reg.rip + sizeof(inst_t)); // 本质保存的是main的call后的指令的地址
+
+    reg.rip = src;
 }

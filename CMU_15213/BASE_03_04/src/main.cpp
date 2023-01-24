@@ -4,6 +4,7 @@ using namespace std;
 
 // C中的库
 #include <stdio.h>
+
 #include "cpu/register.h"
 #include "memory/instruction.h"
 #include "memory/dram.h"
@@ -42,13 +43,27 @@ int main()
 
     // 初始化内存
     // 虚拟地址转物理地址, 栈的高地址为起始地址 所以 高地址在前，且栈底为 rbp 栈顶(top)rsp
-    mm[va2pa(0x7ffffffee210)] = 0x08000660;  // rbp
-    mm[va2pa(0x7ffffffee208)] = 0x0; 
-    mm[va2pa(0x7ffffffee200)] = 0x0000abcd; 
-    mm[va2pa(0x7ffffffee1f8)] = 0x12340000; 
-    mm[va2pa(0x7ffffffee1f0)] = 0x08000660; // rsp
+    write64bits_dram(va2pa(0x7ffffffee210), 0x08000660); // rbp
+    write64bits_dram(va2pa(0x7ffffffee208), 0x0); 
+    write64bits_dram(va2pa(0x7ffffffee200), 0x0000abcd); 
+    write64bits_dram(va2pa(0x7ffffffee1f8), 0x12340000); 
+    write64bits_dram(va2pa(0x7ffffffee1f0), 0x08000660); // rsp
 
+    uint64_t pa = va2pa(0x7ffffffee210);
+
+    // printf("%016lx\n", *((uint64_t *)(&mm[pa]))); // 自主验证
+    // printf("%016lx\n", read64bits_dram(pa));      // read func 验证
+    
+    print_register();
+    print_stack();
+    
     // run inst
+    for (int i = 0; i != 3; ++i) {
+        instruction_cycle();
+
+        print_register();
+        print_stack();
+    }
 
     // verify
     int match = 1;
@@ -71,11 +86,11 @@ int main()
     }
 
 
-    match = match && (mm[va2pa(0x7ffffffee210)] == 0x08000660);  // rbp
-    match = match && (mm[va2pa(0x7ffffffee208)] == 0x0); 
-    match = match && (mm[va2pa(0x7ffffffee200)] == 0x0000abcd); 
-    match = match && (mm[va2pa(0x7ffffffee1f8)] == 0x12340000); 
-    match = match && (mm[va2pa(0x7ffffffee1f0)] == 0x08000660); // rsp
+    match = match && (read64bits_dram(va2pa(0x7ffffffee210)) == 0x08000660);  // rbp
+    match = match && (read64bits_dram(va2pa(0x7ffffffee208)) == 0x0); 
+    match = match && (read64bits_dram(va2pa(0x7ffffffee200)) == 0x0000abcd); 
+    match = match && (read64bits_dram(va2pa(0x7ffffffee1f8)) == 0x12340000); 
+    match = match && (read64bits_dram(va2pa(0x7ffffffee1f0)) == 0x08000660); // rsp
 
     if (match == 1)
     {

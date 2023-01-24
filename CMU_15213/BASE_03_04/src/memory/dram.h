@@ -12,11 +12,17 @@
 
 // 定义内存
 #define MM_LEN (1000)
-static uint8_t mm[MM_LEN];  // 定义1000个字节的内存 ,physical memory 我不知道为啥这里一定需要加一个static md fuck
+extern uint8_t mm[MM_LEN];  // 定义1000个字节的内存 ,physical memory 我不知道为啥这里一定需要加一个static md fuck
 
 // virtual address 0x0 --> 0xffffffffffffffff
 // physical address 000 --> 999  --> 此处并未非真实硬件下 物理地址 到 虚拟地址的实现 
 
+
+uint64_t read64bits_dram(uint64_t paddr);
+void write64bits_dram(uint64_t paddr, uint64_t data);
+
+void print_register();
+void print_stack();
 
 #endif /* __DRAM__H */
 

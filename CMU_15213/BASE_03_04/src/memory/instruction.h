@@ -58,12 +58,13 @@ void init_handler_table();
 void instruction_cycle();
 
 void add_reg_reg_handler(uint64_t src, uint64_t dst);
-
 void move_reg_reg_handler(uint64_t src, uint64_t dst);
+void call_handler(uint64_t src, uint64_t dst);
 
+uint64_t decode_od(od_t od);
 
 // 用于存放 对应操作符的 函数指针。
-static handler_t handler_table[NUM_INSTRUCTION]; // 通过函数初始化
+extern handler_t handler_table[NUM_INSTRUCTION]; // 通过函数初始化
 
 // static handler_t handler_table[NUM_INSTRUCTION] = // 直接初始化
 // {

@@ -31,6 +31,6 @@ typedef struct REG_STRUCT
     uint64_t rip;
 } reg_t;
 
-static reg_t reg;
+extern reg_t reg;
 
 #endif /* __REGISTER__H */
