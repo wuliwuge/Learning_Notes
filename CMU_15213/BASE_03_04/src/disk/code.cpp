@@ -8,7 +8,7 @@ inst_t program[INST_LEN] = {
     // uint64_t add(uint64_t, uint64_t) 这里是模拟up在gdb下的add函数的 反汇编命令
     {
         push_reg,  // 压栈
-        { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
+        { REG,    0,  0,  (uint64_t *)&reg.rbp, nullptr },
         { EMPTY,  0,  0,  nullptr,              nullptr },
         "push    \%rbp"
     },

@@ -11,21 +11,8 @@ using namespace std;
 #include "disk/elf.h"
 #include "cpu/mmu.h"
 
-// 当前模拟的就是这个函数的过程，
-uint64_t add(uint64_t a, uint64_t b)
-{
-
-    uint64_t c = a + b;
-    return c;
-}
-
 int main()
 {
-    // uint64_t a = 0x12340000;
-    // uint64_t b = 0xabcd;
-    // uint64_t c = add(a, b);
-
-    // return 0;
     // 加载操作符运算
     init_handler_table();
 
@@ -49,7 +36,7 @@ int main()
     write64bits_dram(va2pa(0x7ffffffee1f8), 0x12340000); 
     write64bits_dram(va2pa(0x7ffffffee1f0), 0x08000660); // rsp
 
-    uint64_t pa = va2pa(0x7ffffffee210);
+    // uint64_t pa = va2pa(0x7ffffffee210);
 
     // printf("%016lx\n", *((uint64_t *)(&mm[pa]))); // 自主验证
     // printf("%016lx\n", read64bits_dram(pa));      // read func 验证
@@ -58,7 +45,7 @@ int main()
     print_stack();
     
     // run inst
-    for (int i = 0; i != 3; ++i) {
+    for (int i = 0; i != 7; ++i) {
         instruction_cycle();
 
         print_register();
