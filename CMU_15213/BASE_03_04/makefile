@@ -1,25 +1,25 @@
-# 当前是在window下测试makefile，可做linux下重新编写
-CC = g++
-# CFLAGS = -Wall -g -O2 -Werror 
-CFLAGS = -g
+#CC = /usr/bin/gcc-7 我这里好像没有gcc-7
+CC = /usr/bin/gcc
+CFLAGS = -Wall -g -O2 -Werror -std=gnu99 -Wno-unused-function
 
-EXECUTABLE = csapp
+EXE_HARDWARE = exe_hardware
 
-SRC = ./src
+SRC_DIR = ./src
 
-CODE = ./src/memory/instruction.cpp ./src/disk/code.cpp ./src/memory/dram.cpp ./src/cpu/mmu.cpp ./src/cpu/register.cpp ./src/main.cpp 
+# debug
+COMMON = $(SRC_DIR)/common/print.c $(SRC_DIR)/common/convert.c
 
-.PHONY: csapp
-csapp:
-	$(CC) $(CFLAGS) -I$(SRC) $(CODE) -o $(EXECUTABLE) -std=c++11 # 后续需要更新gcc的版本
-	./$(EXECUTABLE)
+# hardware
+CPU =$(SRC_DIR)/hardware/cpu/mmu.c $(SRC_DIR)/hardware/cpu/isa.c
+MEMORY = $(SRC_DIR)/hardware/memory/dram.c
 
-add:
-	$(CC) $(CFLAGS) -I$(SRC) add.cpp -o add -std=c++11
+# main
+MAIN_HARDWARE = $(SRC_DIR)/main_hardware.c
 
-run:
-	./$(EXECUTABLE)
+.PHONY:hardware
+hardware:
+	$(CC) $(CFLAGS) -I$(SRC_DIR) $(COMMON) $(CPU) $(MEMORY) $(DISK) $(MAIN_HARDWARE) -o $(EXE_HARDWARE)
+	./$(EXE_HARDWARE)
 
 clean:
-# rm -rf ./$(EXECUTABLE) ./add
-	rm -f *.o *~ $(EXECUTABLE) ./add
+	rm -f *.o *~ $(EXE_HARDWARE)
