@@ -1,3 +1,4 @@
+#include<stdlib.h>  // 测试git 上传，
 #include<stdio.h>
 #include<string.h>
 #include<headers/cpu.h>
