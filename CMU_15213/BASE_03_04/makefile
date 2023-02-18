@@ -12,6 +12,7 @@ CODE = ./src/memory/instruction.cpp ./src/disk/code.cpp ./src/memory/dram.cpp ./
 .PHONY: csapp
 csapp:
 	$(CC) $(CFLAGS) -I$(SRC) $(CODE) -o $(EXECUTABLE) -std=c++11 # 后续需要更新gcc的版本
+	./$(EXECUTABLE)
 
 add:
 	$(CC) $(CFLAGS) -I$(SRC) add.cpp -o add -std=c++11

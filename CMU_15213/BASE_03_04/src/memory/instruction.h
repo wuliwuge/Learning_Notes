@@ -14,7 +14,7 @@ typedef enum OP
 {
     mov_reg_reg,  // 0
     mov_reg_mem,  // 1
-    move_mem_reg, // 2
+    mov_mem_reg, // 2
     push_reg,     // 3
     pop_reg,      // 4
     call,         // 5
@@ -63,6 +63,8 @@ void call_handler(uint64_t src, uint64_t dst);
 void push_reg_handler(uint64_t src, uint64_t dst);
 void pop_reg_handler(uint64_t src, uint64_t dst);
 void move_reg_mem_handler(uint64_t src, uint64_t dst);
+void move_mem_reg_handler(uint64_t src, uint64_t dst);
+void ret_handler(uint64_t src, uint64_t dst);
 
 uint64_t decode_od(od_t od);
 

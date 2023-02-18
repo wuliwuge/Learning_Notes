@@ -32,7 +32,7 @@ int main()
     // 虚拟地址转物理地址, 栈的高地址为起始地址 所以 高地址在前，且栈底为 rbp 栈顶(top)rsp
     write64bits_dram(va2pa(0x7ffffffee210), 0x08000660); // rbp
     write64bits_dram(va2pa(0x7ffffffee208), 0x0); 
-    write64bits_dram(va2pa(0x7ffffffee200), 0x0000abcd); 
+    write64bits_dram(va2pa(0x7ffffffee200), 0xabcd); 
     write64bits_dram(va2pa(0x7ffffffee1f8), 0x12340000); 
     write64bits_dram(va2pa(0x7ffffffee1f0), 0x08000660); // rsp
 
@@ -45,7 +45,11 @@ int main()
     print_stack();
     
     // run inst
-    for (int i = 0; i != 7; ++i) {
+    for (int i = 0; i != 15; ++i) {
+        if (i == 7)
+        {
+            cout << "debuging" << endl;
+        }
         instruction_cycle();
 
         print_register();
@@ -57,9 +61,9 @@ int main()
     match = match && (reg.rax == 0x1234abcd);
     match = match && (reg.rbx == 0x0);
     match = match && (reg.rcx == 0x8000660);
-    match = match && (reg.rdx == 0xabcd);
-    match = match && (reg.rsi == 0x7ffffffee2f8);
-    match = match && (reg.rdi == 0x1);
+    match = match && (reg.rdx == 0x12340000);
+    match = match && (reg.rsi == 0xabcd);
+    match = match && (reg.rdi == 0x12340000);
     match = match && (reg.rbp == 0x7ffffffee210);
     match = match && (reg.rsp == 0x7ffffffee1f0);
 
@@ -74,8 +78,8 @@ int main()
 
 
     match = match && (read64bits_dram(va2pa(0x7ffffffee210)) == 0x08000660);  // rbp
-    match = match && (read64bits_dram(va2pa(0x7ffffffee208)) == 0x0); 
-    match = match && (read64bits_dram(va2pa(0x7ffffffee200)) == 0x0000abcd); 
+    match = match && (read64bits_dram(va2pa(0x7ffffffee208)) == 0x1234abcd); 
+    match = match && (read64bits_dram(va2pa(0x7ffffffee200)) == 0xabcd); 
     match = match && (read64bits_dram(va2pa(0x7ffffffee1f8)) == 0x12340000); 
     match = match && (read64bits_dram(va2pa(0x7ffffffee1f0)) == 0x08000660); // rsp
 

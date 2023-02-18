@@ -28,34 +28,34 @@ inst_t program[INST_LEN] = {
         mov_reg_mem,
         { REG,    0,  0,  (uint64_t *)&reg.rsi, nullptr },
         { MM_IMM_REG,    -0x20,  0,  (uint64_t *)&reg.rbp, nullptr },
-        "mov    \%rdi,-0x20(\%rbp)"
+        "mov    \%rsi,-0x20(\%rbp)"
     },
     {
-        move_mem_reg,
+        mov_mem_reg,
         { MM_IMM_REG,    -0x18,  0,  (uint64_t *)&reg.rbp, nullptr },
         { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
         "mov    -0x18(\%rbp),\%rdx"
     },
     {
-        move_mem_reg,
+        mov_mem_reg,
         { MM_IMM_REG,    -0x20,  0,  (uint64_t *)&reg.rbp, nullptr },
         { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
-        "mov    -0x20(\%rbp),\%rdx"
+        "mov    -0x20(\%rbp),\%rax"
     },
     {
         add_reg_reg,
         { REG,    0,  0,  (uint64_t *)&reg.rdx, nullptr },
         { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
-        "add    \%rdx,\%rdx"
+        "add    \%rdx,\%rax"
     },
     {
-        move_mem_reg,
+        mov_reg_mem,
         { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
-        { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbx, nullptr },
-        "mov    \%rax,-0x8(\%rdx)"
+        { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbp, nullptr },
+        "mov    \%rax,-0x8(\%rbp)"
     },
     {
-        move_mem_reg,
+        mov_mem_reg,
         { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbp, nullptr },
         { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
         "mov    -0x8(\%rbp),\%rax"
@@ -92,9 +92,9 @@ inst_t program[INST_LEN] = {
         "callq    <add>"
     },
     {
-        mov_reg_reg,
+        mov_reg_mem,
         { REG,    0,  0,  (uint64_t *)&reg.rax, nullptr },
-        { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbx, nullptr },
+        { MM_IMM_REG,    -0x8,  0,  (uint64_t *)&reg.rbp, nullptr },
         "mov    \%rax,-0x8(\%rbp)"
     }
 };
