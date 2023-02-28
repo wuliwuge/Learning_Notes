@@ -1,4 +1,4 @@
-all: linklist1
+.PYTHON: linklist1
 
 linklist1:
 	g++ -o linklist1 linklist1.cpp -g

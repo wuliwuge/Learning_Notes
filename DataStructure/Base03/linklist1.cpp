@@ -168,6 +168,8 @@ int main()
 	PrintList(L3);
 	printf("merge end\n");
 	
+	ReverseList(L3);
+	PrintList(L3);
 
 	DestroyList1(LL);
 	DestroyList1(L1);
@@ -245,7 +247,19 @@ void DestroyList3(LinkList &LL)
 }
 
 // 清空链表。
-void ClearList(LinkList LL);
+void ClearList(LinkList LL)
+{
+	// 清空链表LL是指释放链表全部的结点，但不包括头结点
+	if (LL == NULL) { printf("链表LL不存在。\n"); return ;}
+
+	LinkList tmp = LL->next;
+
+	while(tmp) {
+		LL = tmp->next;
+		free(tmp);
+		tmp = LL->next;
+	}
+}
 
 // 在链表LL的第ii个位置插入元素ee，返回值：0-失败；1-成功
 int InsertList(LinkList LL, uint32_t ii, ElemType *ee)
@@ -475,5 +489,26 @@ int MergeList(LinkList La, LinkList Lb, LinkList Lc)
 }
 
 // 把链表pp结点之后的结点原地逆置（反转），返回值：0-失败，1-成功
-void ReverseList(LNode *pp);
+void ReverseList(LNode *pp)
+{
+	LNode *ss;     // 当前结点
+	LNode *ssnext; // 当前结点的下一个结点
 
+	ss = pp->next; // 从pp结点之后的结点开始翻转
+	pp->next = NULL; // pp->next指向空
+
+	while (ss != NULL) {
+		ssnext=ss->next;  // 保留ss下一结点的地址
+
+		// 以下两行相当于在pp之后插入ss结点
+		ss->next = pp->next;
+		pp->next = ss;
+
+		ss=ssnext;  // ss结点后移
+	}
+}
+
+/*
+	这里链表的原地逆置，其实就是先将头结点和后续结点分开，在将头结点指空。
+	再将分开的结点按顺序向头结点和NULL之间插入，即可实现逆置
+*/
