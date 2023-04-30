@@ -34,10 +34,33 @@
 
 	1）操作数一定是从左到右排列 --》 即是改为后缀表达式也是这样的。
 	2）后缀表达式的 运算符优先级是按照先后排序的。
+
+	################################################
+	中缀                               后缀
+	a+b-a*((c+d)/e-f)+g                ab+acd+e/f-*-g+
+
+	中缀表达式转后缀表达式规则如下：
+	1）数字和字母直接追加到后缀表达式后面
+	2）左括号直接入栈
+	3）如果是右括号 ')' ，进入循环，依次弹出栈中的运算符并追加到后缀表达式后面 ，如果弹出的是左括号 '(' ，循环终止、
+	4）如果当前字符是运算符 '+'、'-'、'*'、'/'，则进入循环；
+	   a）获取栈顶元素
+	   b）如果栈顶元素的优先级比当前运算符高或相同，则弹出并追加到后缀表达式后面
+	   c）如果栈空、或栈顶元素的优先级比当前运算符的低或遇到了左括号 '('，循环终止，循环结束后，当前运算符入栈
+	5）扫描完中缀表达式后，弹出栈中剩下的运算符，追加到后缀表达式后面
+
+	###################################################
+	后缀表达式求值
+	从左到右扫描后缀表达式
+	1）如果是操作数，则直接入栈。
+	2）如果是操作符则将栈中的头两个元素出栈，进行计算，如果此时的操作符是最后一个，则输出结果结束，否将新值入栈，继续 1 和 2
+	这里暂时没有实现
 */
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <ctype.h>  // isalnum
 
 #define MAXSIZE 100     // 顺序栈的最大长度 --》此处采用的静态数组实现  XXX
 
@@ -89,21 +112,24 @@ void PrintStack(PSeqStack SS);
 // 只查看栈顶元素的值，元素不出栈
 int GetTop(PSeqStack SS, ElemType *ee);
 
-
+// 把中缀表达式str1转换成后缀表达式str2
+int torpolish(char *str1,char *str2);
 
 int main()
 {
-	char str[101];
-	memset(str,0,sizeof(str));
+	char str1[101],str2[101];
+	memset(str1,0,sizeof(str1));
+	memset(str2,0,sizeof(str2));
 
-	printf("请输入待检查的字符串：");
-	fgets(str,100,stdin);    // 不建议用gets函数，gets函数编译时可能会出现警号。
-	str[strlen(str)-1]=0;    // 删除str最后的换行。
-	printf("输入的字符串是=%s=\n",str);
+	printf("请输入待转换的表达式：");
+	fgets(str1,100,stdin);     // 不建议使用gets函数，gets函数编译时可能会出现警告
+	str1[strlen(str1)-1]=0;    // 删除str1最后的换行。
+	printf("输入转换的表达式=%s=\n",str1);
 
-	if (checkbrackets(str) == 0) { printf("匹配失败。\n"); return -1; }
+	// 把中缀表达式str1转换为后缀表达式str2
+	if (torpolish(str1,str2) == 0) { printf("转换失败\n"); return -1; }
 
-	printf("匹配成功。\n");
+	printf("转换成功=%s=。\n",str2);
 
 	return 1;
 }
@@ -187,9 +213,63 @@ void PrintStack(PSeqStack SS)
 int GetTop(PSeqStack SS, ElemType *ee)
 {
 	if (SS == NULL || ee == NULL) return 0;	
-
+	if (IsEmpty(SS) == 1) { printf("栈为空\n"); return 0; }
 	memcpy(ee, &SS->data[SS->top], sizeof(ElemType));
 
+	return 1;
+}
+
+int torpolish(char *str1,char *str2)
+{
+	if (!str1 && !str2) return 0;
+
+	ElemType ee;
+	SeqStack SS;
+	InitStack(&SS);
+
+	while (*str1) {
+		if (isalnum(*str1)) {   // 条款1
+			*str2++ = *str1++;
+		} else if (*str1 == '(') {
+			Push(&SS, str1++);  // 左括号直接入栈
+		} else if (*str1 == ')') {
+			while (1) {
+				if (!Pop(&SS, &ee)) return 0;
+				if (ee == '(') break;
+				*str2++ = ee;
+			}
+			str1++;
+		} else if (*str1 == '+' || *str1  == '-' || *str1 == '*' || *str1 == '/') {
+			while (1) {
+				if (!GetTop(&SS, &ee)) break;
+				
+				int prv1, prv2;
+				if (*str1 == '+' || *str1 == '-') prv1 = 1;
+				else if ( *str1 == '*' || *str1 == '/') prv1 = 2;
+
+				if (ee == '+' || ee == '-') prv2 = 1;
+				else if ( ee == '*' || ee == '/') prv2 = 2;
+				else if (ee == '(') break;
+
+				if (prv2 >= prv1) {  // 栈顶元素的优先级大于等于当前运算符的优先级
+					Pop(&SS, &ee);
+					*str2++ = ee;
+				} else {
+					break;
+				}
+			}
+			Push(&SS, str1++);
+		} else {
+			return 0;
+		}
+		
+	}
+	
+	while (!IsEmpty(&SS)) {
+		Pop(&SS, &ee);
+		*str2++ = ee;
+	}
+	*str2 = 0;
 	return 1;
 }
 

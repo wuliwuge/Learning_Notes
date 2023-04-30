@@ -154,6 +154,7 @@ void PrintStack(PSeqStack SS)
 int GetTop(PSeqStack SS, ElemType *ee)
 {
 	if (SS == NULL || ee == NULL) return 0;	
+	if (IsEmpty(SS) == 1) { printf("栈为空\n"); return 0; }
 
 	memcpy(ee, &SS->data[SS->top], sizeof(ElemType));
 
